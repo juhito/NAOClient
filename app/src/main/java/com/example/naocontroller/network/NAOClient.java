@@ -1,10 +1,9 @@
-package com.example.naocontroller;
+package com.example.naocontroller.network;
 
 import android.os.Process;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Arrays;
@@ -26,36 +25,24 @@ public class NAOClient {
         }
     }
 
-    public void sendMessage(String command, String args) {
+    public Object[] sendMessage(String command, String args) {
         try {
-
             out.writeObject(new Object[] {command, args});
-
-            Object[] answer = (Object[]) in.readObject();
-
-            if(answer != null) {
-                System.out.println("TEMP DATA: " + Arrays.toString(answer));
-            }
-
+            return((Object[]) in.readObject());
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return(null);
     }
 
-    public void sendMessage(String command) {
+    public Object[] sendMessage(String command) {
         try {
-
             out.writeObject(new Object[] {command});
-
-            Object[] answer = (Object[]) in.readObject();
-
-            if(answer != null) {
-                System.out.println("TEMP DATA: " + Arrays.toString(answer));
-            }
-
+            return((Object[]) in.readObject());
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return(null);
     }
 
     /* TODO: Find a better way to do this.

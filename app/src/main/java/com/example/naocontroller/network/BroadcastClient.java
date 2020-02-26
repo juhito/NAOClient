@@ -1,4 +1,4 @@
-package com.example.naocontroller;
+package com.example.naocontroller.network;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;

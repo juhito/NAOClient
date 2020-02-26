@@ -1,64 +1,65 @@
-package com.example.naocontroller;
+package com.example.naocontroller.activities;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import android.os.StrictMode;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
+import com.example.naocontroller.R;
 import com.example.naocontroller.fragments.GeneralFragment;
 import com.google.android.material.navigation.NavigationView;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
 public class MainActivity extends AppCompatActivity {
 
-    private DrawerLayout dl;
-    private Toolbar tb;
-    private ActionBarDrawerToggle t;
-    private NavigationView nv;
+    private DrawerLayout drawerLayout;
+    private Toolbar toolbar;
+    private ActionBarDrawerToggle drawerToggle;
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        tb = findViewById(R.id.toolbar);
-        setSupportActionBar(tb);
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        dl = findViewById(R.id.drawer_layout);
-        t = setupDrawerToggle();
+        drawerLayout = findViewById(R.id.drawer_layout);
+        drawerToggle = setupDrawerToggle();
 
-        t.setDrawerIndicatorEnabled(true);
-        t.syncState();
+        drawerToggle.setDrawerIndicatorEnabled(true);
+        drawerToggle.syncState();
 
-        dl.addDrawerListener(t);
+        drawerLayout.addDrawerListener(drawerToggle);
 
-        nv = findViewById(R.id.nvView);
-        setupDrawerContent(nv);
+        navigationView = findViewById(R.id.nvView);
+        setupDrawerContent(navigationView);
 
+        Fragment defaultFragment = null;
+        Class defaultFragmentClass = GeneralFragment.class;
+        try {
+            defaultFragment = (Fragment) defaultFragmentClass.newInstance();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        assert defaultFragment != null;
+        fragmentManager.beginTransaction().replace(R.id.flContent, defaultFragment).commit();
+        setTitle("General");
     }
 
     private ActionBarDrawerToggle setupDrawerToggle() {
-        return(new ActionBarDrawerToggle(this, dl, tb, R.string.drawer_open, R.string.drawer_close));
+        return(new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close));
     }
 
     private void setupDrawerContent(NavigationView view) {
@@ -92,32 +93,25 @@ public class MainActivity extends AppCompatActivity {
 
         item.setChecked(true);
         setTitle(item.getTitle());
-        dl.closeDrawers();
+        drawerLayout.closeDrawers();
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        t.syncState();
+        drawerToggle.syncState();
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         // Pass any configuration change to the drawer toggles
-        t.onConfigurationChanged(newConfig);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+        drawerToggle.onConfigurationChanged(newConfig);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (t.onOptionsItemSelected(item)) {
+        if (drawerToggle.onOptionsItemSelected(item)) {
             return(true);
         }
         return(super.onOptionsItemSelected(item));

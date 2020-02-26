@@ -1,4 +1,4 @@
-package com.example.naocontroller;
+package com.example.naocontroller.network;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
