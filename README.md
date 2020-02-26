@@ -17,7 +17,7 @@ Client code for NAOController App. Uses Java sockets and multi-threading
 
 ## License
 
-*
+* [MIT LICENSE](#)
 
 ## Acknowledgments
 
