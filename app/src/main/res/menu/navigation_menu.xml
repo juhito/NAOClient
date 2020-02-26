@@ -4,14 +4,15 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent">
 
-    <item android:id="@+id/general"
-        android:title="General"
-        tools:ignore="HardcodedText" />
-    <item android:id="@+id/behaviors"
-        android:title="Behaviors"
-        tools:ignore="HardcodedText" />
-    <item android:id="@+id/settings"
-        android:title="Settings"
-        tools:ignore="HardcodedText" />
-
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/general"
+            android:title="@string/general" />
+        <item
+            android:id="@+id/behaviors"
+            android:title="@string/behaviors" />
+        <item
+            android:id="@+id/settings"
+            android:title="@string/settings" />
+    </group>
 </menu>
