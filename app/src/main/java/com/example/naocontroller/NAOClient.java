@@ -14,7 +14,6 @@ public class NAOClient {
     private Socket socket;
     private ObjectInputStream in;
     private ObjectOutputStream out;
-    private Object answer;
 
     public NAOClient(InetAddress serverAddress, int port) {
         try {
