@@ -5,7 +5,7 @@ Client code for NAOController App. Uses Java sockets and multi-threading
 ## Built with
 
 * [Java](https://www.java.com) - Programming Language
-* [Naoqi](http://doc.aldebaran.com/2-1/dev/java/index_java.html) - Naoqi Framework for NAO
+* [Android](https://www.android.com/)
 
 ## Authors
 
@@ -17,7 +17,7 @@ Client code for NAOController App. Uses Java sockets and multi-threading
 
 ## License
 
-* [MIT LICENSE](#)
+* [MIT LICENSE](https://github.com/juhito/NAOClient/blob/master/LICENSE.md)
 
 ## Acknowledgments
 
