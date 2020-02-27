@@ -14,7 +14,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.naocontroller.R;
+import com.example.naocontroller.fragments.BehaviorFragment;
 import com.example.naocontroller.fragments.GeneralFragment;
+import com.example.naocontroller.fragments.SettingsFragment;
 import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity {
@@ -77,6 +79,12 @@ public class MainActivity extends AppCompatActivity {
         switch(item.getItemId()) {
             case R.id.general:
                 fragmentClass = GeneralFragment.class;
+                break;
+            case R.id.behaviors:
+                fragmentClass = BehaviorFragment.class;
+                break;
+            case R.id.settings:
+                fragmentClass = SettingsFragment.class;
                 break;
             default:
                 fragmentClass = GeneralFragment.class;

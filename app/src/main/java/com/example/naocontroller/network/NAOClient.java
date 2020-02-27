@@ -45,20 +45,7 @@ public class NAOClient {
         return(null);
     }
 
-    /* TODO: Find a better way to do this.
-
-            Do I need a reference to the created NaoThreadHandler?
-
-            or perhaps a reference to the created Thread?
-     */
-    public static void startThreadedConnection(InetAddress serverAddress, int port) {
-        try {
-            System.out.println("trying to create a new thread");
-            new Thread(new NaoThreadHandler(serverAddress, port)).start();
-            android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public void printSocketInformation() {
+        System.out.println(this.socket.getInetAddress().getHostAddress());
     }
 }

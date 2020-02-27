@@ -12,31 +12,30 @@ public class NaoThreadHandler implements Runnable {
     private Socket socket;
     private ObjectInputStream in;
     private ObjectOutputStream out;
+    private String commandToRun;
+    private String messageToNao;
+    private Object[] answer;
 
     private Boolean running = true;
 
 
-    public NaoThreadHandler(InetAddress ip, int port) throws IOException {
+    public NaoThreadHandler(InetAddress ip, int port, String command, String message) throws IOException {
         this.socket = new Socket(ip, port);
+        this.commandToRun = command;
+        if(!message.isEmpty()) this.messageToNao = message;
+        else this.messageToNao = "";
 
-        out = new ObjectOutputStream(this.socket.getOutputStream());
-        in = new ObjectInputStream(this.socket.getInputStream());
+        this.out = new ObjectOutputStream(this.socket.getOutputStream());
+        this.in = new ObjectInputStream(this.socket.getInputStream());
     }
 
     @Override
     public void run() {
-        System.out.println("New thread created successfully");
-
-        while(running) {
+        while(this.running) {
             try {
-                out.writeObject(new Object[] {"getTempData"});
-
-                Object[] answer = (Object[]) in.readObject();
-
-                if(answer != null) {
-                    System.out.println("TEMP DATA: " + Arrays.toString(answer));
-                }
-
+                if(this.messageToNao.isEmpty()) out.writeObject(new Object[] {this.commandToRun});
+                else out.writeObject(new Object[]{this.commandToRun, this.messageToNao});
+                this.answer = (Object[]) this.in.readObject();
                 Thread.sleep(5000);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -53,4 +52,5 @@ public class NaoThreadHandler implements Runnable {
         this.running = true;
     }
 
+    public Object[] getAnswer() { return(this.answer); }
 }

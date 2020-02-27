@@ -26,6 +26,7 @@ public class GeneralFragment extends Fragment {
     private Spinner commandList;
     private TextView messageField;
     private Button sendMessage;
+    private static ArrayAdapter<String> commandAdapter;
 
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -43,13 +44,20 @@ public class GeneralFragment extends Fragment {
         messageField = view.findViewById(R.id.messageField);
         sendMessage = view.findViewById(R.id.sendMessageButton);
 
+        client.printSocketInformation();
+
         // Let's populate spinner first
+        // Only do this if it's empty
+        // this is always true when changing fragments... why?
+        System.out.println(commandAdapter == null);
+
         Object[] response = client.sendMessage("getCommands");
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(view.getContext(), android.R.layout.simple_spinner_item,
+        commandAdapter = new ArrayAdapter<>(view.getContext(), android.R.layout.simple_spinner_item,
                 Arrays.stream(response).toArray(String[]::new));
 
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        commandList.setAdapter(adapter);
+        commandAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        commandList.setAdapter(commandAdapter);
+
 
         sendMessage.setOnClickListener(i -> {
             if(commandList.getSelectedItem().equals("naoSpeak")) {
