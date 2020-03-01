@@ -16,10 +16,10 @@ public class NAOClient {
 
     public NAOClient(InetAddress serverAddress, int port) {
         try {
-            this.socket = new Socket(serverAddress, port);
+            socket = new Socket(serverAddress, port);
 
-            out = new ObjectOutputStream(this.socket.getOutputStream());
-            in = new ObjectInputStream(this.socket.getInputStream());
+            out = new ObjectOutputStream(socket.getOutputStream());
+            in = new ObjectInputStream(socket.getInputStream());
         } catch (Exception e) {
             e.printStackTrace();
         }

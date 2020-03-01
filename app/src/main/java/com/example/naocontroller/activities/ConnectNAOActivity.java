@@ -30,14 +30,14 @@ public class ConnectNAOActivity extends AppCompatActivity {
         StrictMode.setThreadPolicy(policy);
 
         try {
-            this.broadcastClient = new BroadcastClient();
+            broadcastClient = new BroadcastClient();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         b.setOnClickListener(v -> {
             try {
-                serverIP = this.broadcastClient.sendBroadcast();
+                serverIP = broadcastClient.sendBroadcast();
 
                 if(serverIP != null) {
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);

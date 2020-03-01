@@ -32,14 +32,13 @@ public class BehaviorFragment extends Fragment {
         sendMessage = view.findViewById(R.id.runBehaviorButton);
 
 
-        if(behaviorAdapter == null) {
-            Object[] response = GeneralFragment.client.sendMessage("getBehaviors");
-            behaviorAdapter = new ArrayAdapter<String>(view.getContext(), android.R.layout.simple_spinner_item,
-                    Arrays.stream(response).toArray(String[]::new));
+        Object[] response = GeneralFragment.client.sendMessage("getBehaviors");
+        behaviorAdapter = new ArrayAdapter<>(view.getContext(), android.R.layout.simple_spinner_item,
+                Arrays.stream(response).toArray(String[]::new));
 
-            behaviorAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            behaviorList.setAdapter(behaviorAdapter);
-        }
+        behaviorAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        behaviorList.setAdapter(behaviorAdapter);
+
 
         sendMessage.setOnClickListener(i -> {
             System.out.println(Arrays.toString(

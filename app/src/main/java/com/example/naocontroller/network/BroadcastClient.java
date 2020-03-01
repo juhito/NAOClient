@@ -12,8 +12,8 @@ public class BroadcastClient {
     private DatagramSocket socket;
 
     public BroadcastClient() throws Exception {
-        this.socket = new DatagramSocket();
-        this.socket.setBroadcast(true);
+        socket = new DatagramSocket();
+        socket.setBroadcast(true);
     }
 
     public InetAddress sendBroadcast() {
