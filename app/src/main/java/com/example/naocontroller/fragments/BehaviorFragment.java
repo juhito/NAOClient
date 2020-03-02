@@ -14,7 +14,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.naocontroller.R;
 
-import java.util.Arrays;
+import java.util.List;
 
 public class BehaviorFragment extends Fragment {
     private Spinner behaviorList;
@@ -32,19 +32,19 @@ public class BehaviorFragment extends Fragment {
         sendMessage = view.findViewById(R.id.runBehaviorButton);
 
 
-        Object[] response = GeneralFragment.client.sendMessage("getBehaviors");
+        List<String> response = (List<String>) GeneralFragment.client.sendMessage("getBehaviors");
         behaviorAdapter = new ArrayAdapter<>(view.getContext(), android.R.layout.simple_spinner_item,
-                Arrays.stream(response).toArray(String[]::new));
+                response);
 
         behaviorAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         behaviorList.setAdapter(behaviorAdapter);
 
 
         sendMessage.setOnClickListener(i -> {
-            System.out.println(Arrays.toString(
+            System.out.println(
                     GeneralFragment.client.sendMessage("runBehavior",
                     behaviorList.getSelectedItem().toString())
-            ));
+            );
         });
 
         return(view);

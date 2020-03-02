@@ -25,27 +25,23 @@ public class NAOClient {
         }
     }
 
-    public Object[] sendMessage(String command, String args) {
+    public Object sendMessage(String command, Object ... args) {
         try {
             out.writeObject(new Object[] {command, args});
-            return((Object[]) in.readObject());
+            return(in.readObject());
         } catch (Exception e) {
             e.printStackTrace();
         }
         return(null);
     }
 
-    public Object[] sendMessage(String command) {
+    public Object sendMessage(String command) {
         try {
             out.writeObject(new Object[] {command});
-            return((Object[]) in.readObject());
+            return(in.readObject());
         } catch (Exception e) {
             e.printStackTrace();
         }
         return(null);
-    }
-
-    public void printSocketInformation() {
-        System.out.println(this.socket.getInetAddress().getHostAddress());
     }
 }

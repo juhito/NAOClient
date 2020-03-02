@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
@@ -17,7 +18,7 @@ import com.example.naocontroller.R;
 import com.example.naocontroller.activities.ConnectNAOActivity;
 import com.example.naocontroller.network.NAOClient;
 
-import java.util.Arrays;
+import java.util.List;
 
 public class GeneralFragment extends Fragment {
 
@@ -26,7 +27,12 @@ public class GeneralFragment extends Fragment {
     private Spinner commandList;
     private TextView messageField;
     private Button sendMessage;
+    private Button moveUp;
+    private Button moveBack;
+    private Button moveLeft;
+    private Button moveRight;
     private static ArrayAdapter<String> commandAdapter;
+    private static float z_axis;
 
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -43,30 +49,47 @@ public class GeneralFragment extends Fragment {
         commandList = view.findViewById(R.id.commandList);
         messageField = view.findViewById(R.id.messageField);
         sendMessage = view.findViewById(R.id.sendMessageButton);
+        moveUp = view.findViewById(R.id.moveUp);
+        moveBack = view.findViewById(R.id.moveBack);
+        moveLeft = view.findViewById(R.id.moveLeft);
+        moveRight = view.findViewById(R.id.moveRight);
 
-        client.printSocketInformation();
-
-        // Let's populate spinner first
-        // Only do this if it's empty
-        // this is always true when changing fragments... why?
-        System.out.println(commandAdapter == null);
-
-        Object[] response = client.sendMessage("getCommands");
+        List<String> response = (List<String>) client.sendMessage("getCommands");
         commandAdapter = new ArrayAdapter<>(view.getContext(), android.R.layout.simple_spinner_item,
-                Arrays.stream(response).toArray(String[]::new));
+                response);
 
         commandAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         commandList.setAdapter(commandAdapter);
 
+        moveUp.setOnClickListener(i -> {
+        });
+
+        moveBack.setOnClickListener(i -> {
+        });
+
+        moveLeft.setOnClickListener(i -> {
+        });
+
+        moveRight.setOnClickListener(i -> {
+        });
 
         sendMessage.setOnClickListener(i -> {
-            if(commandList.getSelectedItem().equals("naoSpeak")) {
+
+            String command = commandList.getSelectedItem().toString();
+            String message = messageField.getText().toString();
+
+            if(command.equals("naoSpeak")) {
                 // TODO: Checks for if the textfield is empty
-                client.sendMessage(commandList.getSelectedItem().toString(),
-                        messageField.getText().toString());
+                if(message.length() < 1) {
+                    Toast t = Toast.makeText(view.getContext(),"Message can't be empty!",
+                            Toast.LENGTH_SHORT);
+                    t.show();
+                }
+                else
+                    client.sendMessage(command, message);
             }
             else {
-                System.out.println(Arrays.toString(client.sendMessage(commandList.getSelectedItem().toString())));
+                System.out.println(client.sendMessage(command));
             }
         });
         return(view);

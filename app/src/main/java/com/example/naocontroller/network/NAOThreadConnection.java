@@ -11,17 +11,17 @@ public class NAOThreadConnection implements Runnable {
     private ObjectInputStream in;
     private ObjectOutputStream out;
     private String commandToRun;
-    private String messageToNao;
-    private Object[] answer;
+    private Object[] commandArgs;
+    private Object answer;
 
     private volatile boolean running;
     private volatile boolean sendMessages;
 
-    public NAOThreadConnection(InetAddress ip, int port, String command, String message) throws IOException {
+    public NAOThreadConnection(InetAddress ip, int port, String command, Object ... args) throws IOException {
         socket = new Socket(ip, port);
         commandToRun = command;
-        if(!message.isEmpty()) messageToNao = message;
-        else messageToNao = "";
+        if(args.length >= 1) commandArgs = args;
+        else commandArgs = null;
 
         out = new ObjectOutputStream(socket.getOutputStream());
         in = new ObjectInputStream(socket.getInputStream());
@@ -35,10 +35,10 @@ public class NAOThreadConnection implements Runnable {
         while(socket.isConnected() || running) {
             try {
                 if(sendMessages) {
-                    if (messageToNao.isEmpty())
-                        out.writeObject(new Object[]{commandToRun});
-                    else out.writeObject(new Object[]{commandToRun, messageToNao});
-                    answer = (Object[]) in.readObject();
+                    if (commandArgs != null)
+                        out.writeObject(new Object[]{commandToRun, commandArgs});
+                    else out.writeObject(new Object[]{commandToRun});
+                    answer = in.readObject();
                 }
                 Thread.sleep(5000);
             } catch (Exception e) {
@@ -47,7 +47,7 @@ public class NAOThreadConnection implements Runnable {
         }
     }
 
-    public Object[] getAnswer() { return(answer); }
+    public Object getAnswer() { return(answer); }
     public void disableMessages() { sendMessages = false; }
     public void enableMessages() { sendMessages = true; }
     public void shutdown() throws IOException {

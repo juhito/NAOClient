@@ -9,6 +9,7 @@ import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -18,11 +19,14 @@ import com.example.naocontroller.activities.ConnectNAOActivity;
 import com.example.naocontroller.network.NAOThreadConnection;
 
 import java.io.IOException;
+import java.util.List;
 
 public class SettingsFragment extends Fragment {
     private static NAOThreadConnection handler;
     private TextView cpuText;
     private TextView batText;
+    private TextView logText;
+    private Button clearLog;
     private Handler repeatHandler;
     private Runnable repeatRunnable;
     private boolean stopRunnable;
@@ -36,15 +40,23 @@ public class SettingsFragment extends Fragment {
 
         cpuText = view.findViewById(R.id.cpuTextView);
         batText = view.findViewById(R.id.batTextView);
+        logText = view.findViewById(R.id.logText);
+        clearLog = view.findViewById(R.id.clearLog);
 
         if(handler == null) {
             try {
-                handler = new NAOThreadConnection(ConnectNAOActivity.getIP(), 8888, "getTempData", "");
+                handler = new NAOThreadConnection(ConnectNAOActivity.getIP(), 8888,
+                        "getTempData");
                 new Thread(handler).start();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+
+        clearLog.setOnClickListener(v -> {
+            logText.setText("");
+        });
+
 
         stopRunnable = false;
         handler.enableMessages();
@@ -54,9 +66,12 @@ public class SettingsFragment extends Fragment {
                 if(cpuText.getText().length() < 1)
                     cpuText.setText("Getting info from server, just a second...");
 
+                List<Double> test = (List<Double>) handler.getAnswer();
+
+
                 if(handler.getAnswer() != null) {
-                    Double cpuTemp = (Double) handler.getAnswer()[0];
-                    Double batTemp = (Double) handler.getAnswer()[1];
+                    Double cpuTemp = test.get(0);
+                    Double batTemp = test.get(1);
 
                     String cpuTextString = "CPU:";
                     String cpuTempString = cpuTextString + " " + String.format("%.2f", cpuTemp);
@@ -109,12 +124,10 @@ public class SettingsFragment extends Fragment {
 
                     cpuText.setText(cpuSpannable, TextView.BufferType.SPANNABLE);
                     batText.setText(batSpannable, TextView.BufferType.SPANNABLE);
-
-
                 }
 
-            } catch (Exception ignored) {
-
+            } catch (Exception e) {
+                e.printStackTrace();
             }
             if(!stopRunnable)
                 repeatHandler.postDelayed(repeatRunnable, 1000);
