@@ -1,5 +1,7 @@
 package com.example.naocontroller.fragments;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,11 +16,15 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
+import java.io.File;
+import java.util.ArrayList;
+
 import com.example.naocontroller.R;
 import com.example.naocontroller.activities.ConnectNAOActivity;
 import com.example.naocontroller.network.NAOClient;
 
 import java.util.List;
+import java.nio.ByteBuffer;
 
 public class GeneralFragment extends Fragment {
 
@@ -62,15 +68,24 @@ public class GeneralFragment extends Fragment {
         commandList.setAdapter(commandAdapter);
 
         moveUp.setOnClickListener(i -> {
+            List<Float> position = (List<Float>) client.sendMessage("getPosition");
+            client.sendMessage("naoMove", 0.1f, 0, 0);
+
         });
 
         moveBack.setOnClickListener(i -> {
+            List<Float> position = (List<Float>) client.sendMessage("getPosition");
+            client.sendMessage("naoMove", -0.1f, 0, 0);
         });
 
         moveLeft.setOnClickListener(i -> {
+            List<Float> position = (List<Float>) client.sendMessage("getPosition");
+            client.sendMessage("naoMove", 0, 0, position.get(2) + 0.001f);
         });
 
         moveRight.setOnClickListener(i -> {
+            List<Float> position = (List<Float>) client.sendMessage("getPosition");
+            client.sendMessage("naoMove", 0, 0, -position.get(2) - 0.001f);
         });
 
         sendMessage.setOnClickListener(i -> {
@@ -88,6 +103,12 @@ public class GeneralFragment extends Fragment {
                 else
                     client.sendMessage(command, message);
             }
+
+            else if(command.equals("takeImage")) {
+
+
+            }
+
             else {
                 System.out.println(client.sendMessage(command));
             }

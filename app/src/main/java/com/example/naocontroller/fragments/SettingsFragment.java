@@ -66,15 +66,15 @@ public class SettingsFragment extends Fragment {
                 if(cpuText.getText().length() < 1)
                     cpuText.setText("Getting info from server, just a second...");
 
-                List<Double> test = (List<Double>) handler.getAnswer();
+                List<Object> test = (List<Object>) handler.getAnswer();
 
 
                 if(handler.getAnswer() != null) {
-                    Double cpuTemp = test.get(0);
-                    Double batTemp = test.get(1);
+                    Integer cpuTemp = (Integer) test.get(0);
+                    Float batTemp = (Float) test.get(1);
 
                     String cpuTextString = "CPU:";
-                    String cpuTempString = cpuTextString + " " + String.format("%.2f", cpuTemp);
+                    String cpuTempString = cpuTextString + " " + String.format("%d", cpuTemp);
 
                     String batTextString = "BAT:";
                     String batTempString = batTextString + " " + String.format("%.2f", batTemp);

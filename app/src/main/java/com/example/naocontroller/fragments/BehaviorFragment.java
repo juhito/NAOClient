@@ -42,7 +42,7 @@ public class BehaviorFragment extends Fragment {
 
         sendMessage.setOnClickListener(i -> {
             System.out.println(
-                    GeneralFragment.client.sendMessage("runBehavior",
+                    GeneralFragment.client.sendMessage("startBehavior",
                     behaviorList.getSelectedItem().toString())
             );
         });

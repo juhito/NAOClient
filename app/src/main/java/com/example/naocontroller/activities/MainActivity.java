@@ -14,6 +14,7 @@ import android.view.MenuItem;
 
 import com.example.naocontroller.R;
 import com.example.naocontroller.fragments.BehaviorFragment;
+import com.example.naocontroller.fragments.CameraFragment;
 import com.example.naocontroller.fragments.GeneralFragment;
 import com.example.naocontroller.fragments.SettingsFragment;
 import com.google.android.material.navigation.NavigationView;
@@ -81,6 +82,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.behaviors:
                 fragmentClass = BehaviorFragment.class;
+                break;
+            case R.id.camera:
+                fragmentClass = CameraFragment.class;
                 break;
             case R.id.settings:
                 fragmentClass = SettingsFragment.class;
