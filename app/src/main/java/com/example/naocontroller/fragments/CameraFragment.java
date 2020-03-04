@@ -35,12 +35,10 @@ public class CameraFragment extends Fragment {
 
 
         takePicture.setOnClickListener(i -> {
+
             List<Object> data = (ArrayList<Object>) GeneralFragment.client.sendMessage("takeImage");
 
-            System.out.println("Received byte[]: " + data.get(6));
-
             byte[] byteData = (byte[]) data.get(6);
-            ByteBuffer imageData = ByteBuffer.wrap(byteData);
 
             Drawable d = Drawable.createFromStream(new ByteArrayInputStream(byteData), null);
 
