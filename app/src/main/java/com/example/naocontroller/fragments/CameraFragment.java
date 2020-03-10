@@ -7,8 +7,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.media.AudioFormat;
+import android.media.AudioManager;
 import android.media.AudioRecord;
+import android.media.AudioTrack;
 import android.media.MediaRecorder;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -31,8 +34,14 @@ import com.example.naocontroller.R;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.Permission;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -43,7 +52,7 @@ public class CameraFragment extends Fragment {
     private Button takePicture;
     private Button recordAudio;
     private ImageView imageView;
-    private AudioRecord recorder;
+    private MediaRecorder recorder;
     private static Drawable finalImage;
     private byte[] soundData;
 
@@ -61,7 +70,7 @@ public class CameraFragment extends Fragment {
 
         soundData = new byte[16384];
 
-        if(finalImage != null)
+        if (finalImage != null)
             imageView.setImageDrawable(finalImage);
 
         takePicture.setOnClickListener(i -> {
@@ -79,78 +88,42 @@ public class CameraFragment extends Fragment {
 
         recordAudio.setOnTouchListener((v, event) -> {
 
-            if(event.getAction() == MotionEvent.ACTION_DOWN) {
+            Path path = Paths.get(getActivity().getExternalCacheDir().getAbsolutePath() + "/record.wav");
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 try {
-                    recorder = new AudioRecord(MediaRecorder.AudioSource.MIC,
-                            44100,
-                            AudioFormat.CHANNEL_IN_MONO,
-                            AudioFormat.ENCODING_PCM_16BIT,
-                            AudioRecord.getMinBufferSize(44100,
-                                    AudioFormat.CHANNEL_IN_MONO,
-                                    AudioFormat.ENCODING_PCM_16BIT));
-                    soundData = new byte[AudioRecord.getMinBufferSize(44100,
-                            AudioFormat.CHANNEL_IN_MONO,
-                            AudioFormat.ENCODING_PCM_16BIT)];
 
+                    recorder = new MediaRecorder();
+                    recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                    recorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
+                    recorder.setOutputFile(path.toAbsolutePath().toString());
+                    recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 
-                    recorder.startRecording();
+                    recorder.prepare();
+                    recorder.start();
 
-                    while(event.getAction() == MotionEvent.ACTION_BUTTON_PRESS) {
-                        recorder.read(soundData, 0, soundData.length);
-                    }
-
-                } catch(Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
-            else if(event.getAction() == MotionEvent.ACTION_UP) {
-                if(recorder != null) {
+            } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                if (recorder != null) {
                     recorder.stop();
                     recorder.release();
 
-                    GeneralFragment.client.sendMessage("playRecording", (Object) soundData);
-                }
-            }
-            /*
-            AsyncTask.execute(() -> {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    File f = new File(path.toAbsolutePath().toString());
                     try {
-                        int permission = ActivityCompat.checkSelfPermission(getActivity(),
-                                Manifest.permission.RECORD_AUDIO);
-
-                        if (permission != PackageManager.PERMISSION_GRANTED) {
-                            String[] PERMISSIONS_STORAGE = {
-                                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                    Manifest.permission.RECORD_AUDIO
-                            };
-                            int REQUEST_EXTERNAL_STORAGE = 1;
-
-                            ActivityCompat.requestPermissions(
-                                    getActivity(),
-                                    PERMISSIONS_STORAGE,
-                                    REQUEST_EXTERNAL_STORAGE
-                            );
-                        }
-
-
-
-
-                    } catch (Exception e) {
+                        soundData = Files.readAllBytes(path);
+                        GeneralFragment.client.sendMessage("playRecording", (Object) soundData);
+                        f.delete();
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
 
-                } else if (event.getAction() == MotionEvent.ACTION_UP) {
-
                 }
-            });
-
-             */
-
-            return(false);
+            }
+            return (false);
         });
 
-        return(view);
+        return (view);
     }
 
     @Override
